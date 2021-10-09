@@ -21,6 +21,20 @@ services:
     networks:
       - backend
 
+  mariadb:
+    container_name: mariadb
+    image: mariadb:10.6.4-focal
+    environment:
+      - MARIADB_DATABASE=opentag
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3306:3306"
+    volumes:
+      - dev-local-database-volme:/var/lib/mysql
+    tty: true
+
 networks:
   backend:
 
+volumes:
+  dev-local-database-volme:
