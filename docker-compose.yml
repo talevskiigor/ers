@@ -6,6 +6,10 @@ services:
     container_name: php
     ports:
       - "9000:9000"
+    depends_on:
+      - mariadb
+#    command: bash -c "cd /var/www/html && php bin/console doctrine:migrations:migrate --no-interaction -vv && php bin/console doctrine:fixtures:load -n && tail -f /dev/null"
+    tty: true
     networks:
       - backend
     volumes:
@@ -21,6 +25,22 @@ services:
     networks:
       - backend
 
+  mariadb:
+    container_name: mariadb
+    image: mariadb:10.6.4-focal
+    environment:
+      - MARIADB_DATABASE=opentag
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3306:3306"
+    networks:
+      - backend
+    volumes:
+      - dev-local-database-volme:/var/lib/mysql
+    tty: true
+
 networks:
   backend:
 
+volumes:
+  dev-local-database-volme:
