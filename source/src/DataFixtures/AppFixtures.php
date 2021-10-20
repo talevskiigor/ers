@@ -34,22 +34,21 @@ class AppFixtures extends Fixture
 
         try {
 
-            $filePath = implode(DIRECTORY_SEPARATOR, [$this->kernel->getProjectDir(), 'DOCS', 'example-response.json']);
-            $obj = json_decode(file_get_contents($filePath), true);
+//            $filePath = implode(DIRECTORY_SEPARATOR, [$this->kernel->getProjectDir(), 'DOCS', 'example-response.json']);
+//            $obj = json_decode(file_get_contents($filePath), true);
 
             $date = Carbon::now();
 
-            for ($i = 0; $i < 32; $i++) {
+            for ($i = 0; $i < 31; $i++) {
 
+
+                $url = sprintf('https://openexchangerates.org/api/historical/%s.json?app_id=42683a64679d4bf78c84419c9a2607ef',$date->toDateString());
                 $date->addDay(-1);
-
+                $obj = json_decode(file_get_contents($url), true);
                 foreach ($obj['rates'] as $code => $value) {
-                    $percent = 1 + rand(1, 5) / 100;
-                    $calNewValue = rand(0, 1) ? $value * $percent : $value / $percent;
-
                     $rate = new Rate();
                     $rate->setCode($code);
-                    $rate->setValue($calNewValue);
+                    $rate->setValue($value);
                     $rate->setDate($date);
                     $manager->persist($rate);
                 }
@@ -58,7 +57,7 @@ class AppFixtures extends Fixture
 
 
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            dd($e);
             dd('Cant find seeder file');
         }
 
